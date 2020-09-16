@@ -11,11 +11,13 @@
 |
 */
 
-//Route::get('/', function () {
-//    return view('home');
-//});
+Route::redirect('/', '/login');
 
 Auth::routes(['verify' => true]);
+Route::get('verify/resend', 'TwoFactorController@resend')->name('verify.resend');
+Route::resource('verify', 'TwoFactorController')->only(['index', 'store']);
 
-Route::get('/', 'HomeController@index')->name('home');
-Route::get('/home', 'HomeController@index')->name('home');
+Route::group(['middleware' => ['auth', 'twofactor']
+], function () {
+    Route::get('/home', 'HomeController@index')->name('home');
+});

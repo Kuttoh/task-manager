@@ -34,5 +34,22 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'two_factor_expiry' => 'datetime',
     ];
+
+    public function generateTwoFactorCode()
+    {
+        $this->timestamps = false;
+        $this->two_factor_token = rand(100000, 999999);
+        $this->two_factor_expiry = now()->addMinutes(10);
+        $this->save();
+    }
+
+    public function resetTwoFactorCode()
+    {
+        $this->timestamps = false;
+        $this->two_factor_token = null;
+        $this->two_factor_expiry = null;
+        $this->save();
+    }
 }
