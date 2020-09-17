@@ -50,6 +50,9 @@
 {{--                                </li>--}}
 {{--                            @endif--}}
                         @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('projects') }}">{{ __('Projects') }}</a>
+                            </li>
                             @if (Route::has('register') && auth()->user()->role->slug == 'admin')
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('users') }}">{{ __('Users') }}</a>

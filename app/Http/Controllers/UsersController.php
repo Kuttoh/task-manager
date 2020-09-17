@@ -94,7 +94,11 @@ class UsersController extends Controller
 
     public function makeAdmin($userId)
     {
-        $this->adminCheck();
+        $user = auth()->user();
+
+        if ($user->role->slug != 'admin') {
+            return redirect('/')->with('error', 'Access Denied');
+        }
 
         $user = User::findOrFail($userId);
 

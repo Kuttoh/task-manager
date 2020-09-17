@@ -22,8 +22,29 @@ class Project extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
+    public function path()
+    {
+        return "/projects/{$this->id}";
+    }
+
     public function projectLead()
     {
         return $this->belongsTo(User::class, 'project_lead');
     }
+
+    public function members()
+    {
+        return $this->hasMany(ProjectMember::class, 'user_id');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo(ProjectStatus::class, 'project_status_id');
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+
 }
