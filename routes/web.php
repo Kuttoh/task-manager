@@ -18,7 +18,7 @@ Auth::routes(['verify' => true]);
 Route::get('verify/resend', 'TwoFactorController@resend')->name('verify.resend');
 Route::resource('verify', 'TwoFactorController')->only(['index', 'store']);
 
-Route::group(['middleware' => ['auth', 'twofactor']
+Route::group(['middleware' => ['auth']
 ], function () {
     Route::get('/home', 'ProjectsController@index')->name('home');
 
