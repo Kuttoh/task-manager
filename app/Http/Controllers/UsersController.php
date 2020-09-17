@@ -11,15 +11,19 @@ class UsersController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
 
     public function index()
     {
-        $this->adminCheck();
+        $user = auth()->user();
 
-        $users = User::all();
+        if ($user->role->slug != 'admin') {
+            return redirect('home')->with('error', 'Access Denied');
+        }
+
+        $users = User::with('role')->paginate(10);
 
         return view('users.index', compact('users'));
     }
@@ -41,7 +45,11 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        $this->adminCheck();
+        $user = auth()->user();
+
+        if ($user->role->slug != 'admin') {
+            return redirect('/')->with('error', 'Access Denied');
+        }
 
         return view('users.edit', compact('user'));
     }
@@ -59,7 +67,7 @@ class UsersController extends Controller
 
         $user->update($request->all());
 
-        return redirect('/users')->with('type', 'success')->with('message', 'User details updated!');
+        return redirect('/users')->with('success', 'User details updated!');
     }
 
     public function destroy($id)
@@ -69,7 +77,11 @@ class UsersController extends Controller
 
     public function makeUser($userId)
     {
-        $this->adminCheck();
+        $user = auth()->user();
+
+        if ($user->role->slug != 'admin') {
+            return redirect('/')->with('error', 'Access Denied');
+        }
 
         $user = User::findOrFail($userId);
 
@@ -77,7 +89,7 @@ class UsersController extends Controller
 
         $this->sendRoleMail($userId);
 
-        return redirect('/users')->with('type', 'success')->with('message', 'User is now Admin!');
+        return redirect('/users')->with('success', 'User is now Admin!');
     }
 
     public function makeAdmin($userId)
@@ -90,7 +102,7 @@ class UsersController extends Controller
 
         $this->sendRoleMail($userId);
 
-        return redirect('/users')->with('type', 'success')->with('message', 'User privileges revoked!');
+        return redirect('/users')->with('warning', 'User privileges revoked!');
     }
 
     /**
@@ -105,12 +117,12 @@ class UsersController extends Controller
             ->queue(new RoleAssigned($user));
     }
 
-    private function adminCheck()
-    {
-        $user = auth()->user();
-
-        if ($user->role->slug != 'admin') {
-            return redirect('/')->with('type', 'danger')->with('message', 'Access Denied');
-        }
-    }
+//    public function adminCheck()
+//    {
+//        $user = auth()->user();
+//
+//        if ($user->role->slug != 'admin') {
+//            return redirect('/')->with('type', 'danger')->with('message', 'Access Denied');
+//        }
+//    }
 }
