@@ -71,8 +71,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="project_status_id">Update Status:</label>
-                                <select name="project_status_id" id="project_status_id" class="form-control" required>
+                                <label for="task_status_id">Update Status:</label>
+                                <select name="task_status_id" id="task_status_id" class="form-control" required>
                                     <option value="">Choose One...</option>
                                     @foreach($statuses as $status)
                                         <option value="{{ $status->id}}" {{ $task->status->id == $status->id ? 'selected': '' }}>

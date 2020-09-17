@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ProjectAssigned;
 use App\Mail\TaskAssigned;
 use App\Project;
 use App\ProjectMember;
@@ -52,10 +51,7 @@ class TaskController extends Controller
         $task->save();
         $task->fresh();
 
-        $projectMember = new ProjectMember();
-        $projectMember->user_id = $input['user_id'];
-        $projectMember->project_id = $input['project_id'];
-        $projectMember->save();
+        $this->link($input);
 
         $this->sendAssignMail($input['user_id'], $task->id);
 
@@ -84,7 +80,39 @@ class TaskController extends Controller
 
     public function update(Request $request, $task_id)
     {
-        dd($request->all());
+       $task = Task::findOrFail($task_id);
+
+        $input = $request->except('_token');
+
+        $start = Carbon::parse($input['start_date']);
+
+        $end = isset($input['end_date']) ? Carbon::parse($input['end_date']) : null;
+
+        if ($end && $start->gt($end)) {
+            return back()->with('error', 'Task cannot end before starting');
+        }
+
+        $input = array_add($input, 'project_id', $task->project->id);
+
+
+        $task->update([
+            'title' => $input ['title'],
+            'description' => $input ['description'],
+            'start_date' => $input ['start_date'],
+            'end_date' => $input ['end_date'],
+            'user_id' => $input ['user_id'],
+            'task_priority_id' => $input ['task_priority_id'],
+            'task_status_id' => $input ['task_status_id'],
+            'project_id' => $input ['project_id'],
+        ]);
+
+        $task->fresh();
+
+        $this->link($input);
+
+        $this->sendAssignMail($input['user_id'], $task->id);
+
+        return back()->with('success', 'Task updated successfully!');
     }
 
 
@@ -103,5 +131,13 @@ class TaskController extends Controller
             ->cc('admin@task-manager.com')
             ->bcc($task->project->projectLead->email)
             ->queue(new TaskAssigned($task));
+    }
+
+    private function link($input)
+    {
+        $projectMember = new ProjectMember();
+        $projectMember->user_id = $input['user_id'];
+        $projectMember->project_id = $input['project_id'];
+        $projectMember->save();
     }
 }

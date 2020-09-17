@@ -33,7 +33,7 @@
 {{--                                    <button type="submit" class="btn btn-outline-info"><i class="fa fa-edit"></i> </button>--}}
 {{--                                </a>--}}
 {{--                            @endif--}}
-                            @if($task->status->slug == 'done' and $task->projectLead->id == auth()->id())
+                            @if($task->status->slug == 'done' and $task->project->projectLead->id == auth()->id())
                                 <a href="{{$task->path()}}/delete">
                                     <button type="submit" class="btn btn-outline-danger"><i class="fa fa-trash"></i> </button>
                                 </a>
