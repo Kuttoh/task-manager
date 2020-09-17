@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class TaskAssigned extends Mailable
+class TaskReminder extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -20,6 +20,6 @@ class TaskAssigned extends Mailable
 
     public function build()
     {
-        return $this->markdown('emails.task-assigned');
+        return $this->markdown('emails.task-reminder');
     }
 }
