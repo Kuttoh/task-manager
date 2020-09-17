@@ -37,6 +37,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_expiry' => 'datetime',
     ];
 
+    public function path()
+    {
+        return "/users/{$this->id}";
+    }
+
     public function generateTwoFactorCode()
     {
         $this->timestamps = false;
@@ -51,5 +56,10 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->two_factor_token = null;
         $this->two_factor_expiry = null;
         $this->save();
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
 }

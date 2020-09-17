@@ -28,7 +28,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/users';
 
     /**
      * Create a new controller instance.
@@ -37,7 +37,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        $this->middleware('auth');
     }
 
     /**
@@ -64,11 +64,24 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $user = new User();
+
+        $user->first_name = $data['first_name'];
+        $user->last_name = $data['last_name'];
+        $user->role_id = 1;
+        $user->email = $data['email'];
+        $user->password = Hash::make($data['password']);
+
+        $user->save();
+        $user->fresh();
+
+        return $user;
+//        return User::create([
+//            'first_name' => $data['first_name'],
+//            'last_name' => $data['last_name'],
+//            'role_id' => 1, //default role is user
+//            'email' => $data['email'],
+//            'password' => Hash::make($data['password']),
+//        ]);
     }
 }

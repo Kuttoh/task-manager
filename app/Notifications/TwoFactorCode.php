@@ -44,7 +44,7 @@ class TwoFactorCode extends Notification
             ->line('Your two factor code is '.$notifiable->two_factor_token)
             ->action('Verify Here', route('verify.index'))
             ->line('The code will expire in 10 minutes')
-            ->line('If you have not tried to login, ignore this message.');
+            ->line('If you have not tried to login, consider changing your password or reporting this incident to admin.');
     }
 
     /**
