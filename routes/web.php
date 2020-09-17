@@ -39,5 +39,11 @@ Route::group(['middleware' => ['auth', 'twofactor']
     Route::get('/projects/{project_id}', 'ProjectsController@show')->name('project.show');
 
 
-    Route::get('/tasks/create', 'TaskController@create')->name('task.create');
+    Route::get('/tasks/create/{project_id}', 'TaskController@create')->name('task.create');
+    Route::post('/tasks', 'TaskController@store')->name('task.store');
+
+
+    Route::get('/tasks/{task_id}', 'TaskController@show')->name('task.show');
+    Route::get('/tasks/{task_id}/edit', 'TaskController@edit')->name('task.edit');
+    Route::post('/tasks/{task_id}/update', 'TaskController@update')->name('task.update');
 });

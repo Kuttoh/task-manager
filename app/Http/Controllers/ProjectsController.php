@@ -66,6 +66,8 @@ class ProjectsController extends Controller
         $projectMember->project_id = $project->id;
         $projectMember->save();
 
+        $this->sendAssignMail($input['project_lead'], $project->id);
+
         return back()->with('success', 'Project saved successfully!');
     }
 
@@ -73,7 +75,9 @@ class ProjectsController extends Controller
     {
         $tasks = Task::where('project_id', $project_id)->paginate(10);
 
-        return view('projects.show', ['tasks' => $tasks]);
+        $project = Project::findOrFail($project_id);
+
+        return view('projects.show', ['tasks' => $tasks, 'project' => $project]);
     }
 
     public function edit($project_id)
