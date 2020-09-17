@@ -11,14 +11,14 @@
 |
 */
 
-Route::redirect('/', '/login');
+Route::redirect('/', '/home');
 
 Auth::routes(['verify' => true]);
 
 Route::get('verify/resend', 'TwoFactorController@resend')->name('verify.resend');
 Route::resource('verify', 'TwoFactorController')->only(['index', 'store']);
 
-Route::group(['middleware' => ['auth']
+Route::group(['middleware' => ['auth', 'twofactor']
 ], function () {
     Route::get('/home', 'ProjectsController@index')->name('home');
 
